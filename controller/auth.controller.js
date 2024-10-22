@@ -5,7 +5,8 @@ const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 authController.authenticate = (req, res, next) => {
   try {
-    const tokenString = req.headers.authorizaion; // Bearer jsdaljsdsdrawer
+    const tokenString = req.headers.authorization; // Bearer jsdaljsdsdrawer
+    // authorizaion 오타 수정
     if (!tokenString) {
       throw new Error("invalide token");
     }

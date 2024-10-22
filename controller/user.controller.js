@@ -6,20 +6,45 @@ const saltRounds = 10; // 10 정도로 설정
 const userController = {};
 
 // 회원 가입 기능
+// userController.createUser = async (req, res) => {
+//   try {
+//     const { email, name, password } = req.body;
+//     const user = await User.findOne({ email }); // {email: email} 인데, 자바스크립트 심플문법?이 있다고 함.
+//     if (user) {
+//       throw new Error("이미 가입이 된 유저 입니다.");
+//     }
+//     const salt = bcrypt.genSaltSync(saltRounds);
+//     const hash = bcrypt.hashSync(password, salt);
+//     const newUser = new User({ email, name, password: hash });
+//     await newUser.save();
+//     res.status(200).json({ status: "success" });
+//   } catch (error) {
+//     res.status(400).json({ status: "fail", error });
+//   }
+// };
+
 userController.createUser = async (req, res) => {
   try {
     const { email, name, password } = req.body;
-    const user = await User.findOne({ email }); // {email: email} 인데, 자바스크립트 심플문법?이 있다고 함.
-    if (user) {
-      throw new Error("이미 가입이 된 유저 입니다.");
+
+    // 필수 값 체크
+    if (!email || !name || !password) {
+      throw new Error("모든 필드를 입력해주세요.");
     }
+
+    const user = await User.findOne({ email }); // {email: email} 을 간단히 { email } 로 작성 가능
+    if (user) {
+      throw new Error("이미 가입이 된 유저입니다.");
+    }
+
     const salt = bcrypt.genSaltSync(saltRounds);
     const hash = bcrypt.hashSync(password, salt);
     const newUser = new User({ email, name, password: hash });
     await newUser.save();
+
     res.status(200).json({ status: "success" });
   } catch (error) {
-    res.status(400).json({ status: "fail", error });
+    res.status(400).json({ status: "fail", message: error.message });
   }
 };
 

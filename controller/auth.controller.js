@@ -5,25 +5,33 @@ const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 authController.authenticate = (req, res, next) => {
   try {
-    const tokenString = req.headers.authorization; // Bearer jsdaljsdsdrawer
-    // authorizaion 오타 수정
+    const tokenString = req.headers.authorization; // Bearer tokenString
     if (!tokenString) {
-      throw new Error("invalide token");
+      throw new Error("Invalid token - no token provided");
     }
+
     const token = tokenString.replace("Bearer ", "");
+
     jwt.verify(token, JWT_SECRET_KEY, (error, payload) => {
       if (error) {
-        throw new Error("invalid token");
+        if (error.name === "TokenExpiredError") {
+          throw new Error("Token expired");
+        } else {
+          throw new Error("Invalid token");
+        }
       }
-      //res.status(200).json({ status: "success", userId: payload, _id });
-      req.userId = payload._id; //req에 담아서 next로 보내기
-      next();
+
+      req.userId = payload._id; // 토큰에서 사용자 ID 추출 후 저장
+      next(); // 다음 미들웨어로 이동
     });
+    console.log("JWT_SECRET_KEY:", JWT_SECRET_KEY); // 환경 변수 확인
+    console.log("Authorization Header:", tokenString); // 토큰 값 확인
+    console.log("Decoded Payload:", payload); // 파싱된 JWT 확인
+    console.log("User ID from Token:", req.userId); // 최종적으로 userId 확인
   } catch (error) {
+    console.log("Authentication Error:", error); // 에러가 발생했을 때 디버깅용
     res.status(400).json({ status: "fail", message: error.message });
   }
 };
 
 module.exports = authController;
-
-// 미들웨어

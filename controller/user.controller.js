@@ -98,7 +98,9 @@ userController.loginWithEmail = async (req, res) => {
 userController.getUser = async (req, res) => {
   try {
     const { userID } = req;
-    const user = User.findById(userID);
+    const user = User.findById(userID).lean(); // lean()을 사용하면 plain JSON 형태로 데이터를 가져옴
+    // .lean() 사용: 위 코드에서 .lean() 메서드를 사용하면 Mongoose 문서가 아닌, 순수한 JavaScript 객체로 데이터를 반환하기 때문에 순환 참조 문제를 방지할 수 있다.
+    // .lean()은 MongoDB 데이터를 가공하지 않고 그대로 사용할 때 유용함.
     if (!user) {
       throw new Error("can not find user");
     }

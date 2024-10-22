@@ -95,6 +95,19 @@ userController.loginWithEmail = async (req, res) => {
   }
 };
 
+userController.getUser = async (req, res) => {
+  try {
+    const { userID } = req;
+    const user = User.findById(userID);
+    if (!user) {
+      throw new Error("can not find user");
+    }
+    res.status(200).json({ status: "succes", user });
+  } catch (error) {
+    return res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
 // 회원 탈퇴 기능
 userController.deleteUser = async (req, res) => {
   try {

@@ -19,6 +19,7 @@ const taskSchema = Schema(
   },
   { timestamps: true } //몽구스에서 제공하는 옵션
 ); // Schema.Types.ObjectId 몽구스에서 제공하는 데이터 타입
+// populate를 쓰려면 ref정의 해두어야 함.
 
 const Task = mongoose.model("Task", taskSchema);
 

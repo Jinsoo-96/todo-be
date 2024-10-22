@@ -16,7 +16,7 @@ taskController.creatTask = async (req, res) => {
 
 taskController.getTask = async (req, res) => {
   try {
-    const tasklist = await Task.find({}).select("-__v"); // -__v를 안보고 싶어서.
+    const tasklist = await Task.find({}).populate("author").select("-__v"); // -__v를 안보고 싶어서.
     res.status(200).json({ status: "ok", data: tasklist });
   } catch (err) {
     res.status(400).json({ status: "fail", error: err });
